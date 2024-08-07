@@ -1,7 +1,6 @@
 const AcessService  = require('../services/acess.service')
 
-class AcessController{
-    signUp =async (req,res,next)=>{
+const signUp =async (req,res,next)=>{
             try {
                 console.log(`SignUp :`,req.body)
                 return   res.status(200).json(await AcessService.SignUp(req.body))
@@ -10,6 +9,6 @@ class AcessController{
                 next(error)
             }
     }
-}
 
-module.exports = new  AcessController()
+
+module.exports = {signUp}

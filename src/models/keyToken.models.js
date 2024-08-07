@@ -13,14 +13,15 @@ const keyTokenSchema = new Schema({
         type:String,
         required:true,
     },
-    refreshToken:{
-        type:Array,
-        default :[]
-    },
-    password:{
+    privateKey:{
         type:String,
         required:true,
     },
+    refreshToken:{
+        type:Array,
+        default :[String]
+    },
+   
     
 },{
     collection : COLLECTION_NAME,
