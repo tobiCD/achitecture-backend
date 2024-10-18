@@ -8,23 +8,36 @@ const { userInfo, type } = require('os')
 const { ppid } = require('process')
 const { format } = require('path')
 const  {getInfoData} = require('../utils/index')
+const {findByEmail} = require('./user.service')
+const { BadRequestError } = require('../core/error.response')
 const RoleShop = {
     shop :'SHOP',
     writer : 'WRITER',
     editor : 'EDITOR',
     admin : 'ADMIN'
 }
+const login = async({email, password,refreshToken= null})=>{
+    const foundUser = await findByEmail({email})
+    if(!foundUser) {
+        return{
+            msg: 'User not registed',
+            EC: 200
+        }
+    }
+    const match = bcrypt.compare(password,foundUser.password)
+
+}
 const SignUp = async(rawUserData) =>{
-    try {
         const checkEmail = await User.findOne({
             email : rawUserData.email,
         })
         if(checkEmail){
-            return {
-                msg : 'user is registed',
-                EC  :200
-
-            } 
+            throw new BadRequestError('Error Code : User already registed!')
+        //     return {
+        //         errrorCode : 100,
+        //     message : 'user is register'           
+        //  }
+            
         }
         const passwordHashed = await bcrypt.hash(rawUserData.password, 10)
         const newUser = await User.create({
@@ -42,6 +55,8 @@ const SignUp = async(rawUserData) =>{
             const keyStore = await KeyTokenService.createToken( newUser._id,publicKey,privateKey)
             console.log(keyStore) 
             if(!keyStore){
+                // throw new BadRequestError('Error Code : User already registed!')
+
                 return{
                     msg : 'keyStore error', 
                     EC: 201
@@ -61,14 +76,6 @@ const SignUp = async(rawUserData) =>{
         }
     }
 
-    } catch (error) {
-        console.log(error)
-        return{
-            msg : ' error from server',
-            EC: 500
-        }
-    }
-    
 }
 
    

@@ -17,5 +17,19 @@ app.use('', require('./route/api'))
 // checkOverLoad()
 // instanceMongodb()
 
+//handle error
+// app.use((req,res,next)=>{// hàm middleware có 3 tham số 
+//     const error = new Error('Not Found')//tạo mới đội tượng lỗi
+//     error.status = 403 // gán status lỗi cho đối tượng
+//     next(error) // chuyển đối tượng lỗi sang handler
+// })
+app.use((error,req,res,next)=>{// hàm handler có 4 tham số 
+    const status = error.status || 500 // lấy status dối tượng lỗi 
+    return res.status(status).json({ // gửi respone khi request gửi đến
 
+        status : 'error',
+        code : status,
+        message : error.message || 'Internal Server Error'
+   })
+})
 module.exports = app
